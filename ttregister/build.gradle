@@ -1,12 +1,17 @@
 apply plugin: 'groovy'
+apply plugin: 'maven'
 
-ext {
-    bintrayName = 'ttregister'
-    artifact = bintrayName
-    libraryName = 'toutiao register gradle plugin'
-    libraryDescription = 'A gradle plugin used for arouter route map register'
-    libraryVersion = '1.0.0'
+//ext {
+//    bintrayName = 'ttregister'
+//    artifact = bintrayName
+//    libraryName = 'toutiao register gradle plugin'
+//    libraryDescription = 'A gradle plugin used for arouter route map register'
+//    libraryVersion = '1.0.0'
+//}
+repositories {
+    mavenCentral()
 }
+
 
 dependencies {
     compile gradleApi()
@@ -17,5 +22,19 @@ dependencies {
     compile 'com.android.tools.build:gradle:3.1.4'
 }
 
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+//设置maven deployer
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //设置插件的GAV参数
+            pom.groupId = 'com.toutiao.router'
+            pom.artifactId = 'ttregister'
+            pom.version = '1.0.0'
+            //文件发布到下面目录
+            repository(url: uri('../repo'))
+        }
+    }
+}
+//
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
