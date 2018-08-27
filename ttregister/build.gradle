@@ -19,7 +19,7 @@ dependencies {
 }
 
 dependencies {
-    compile 'com.android.tools.build:gradle:3.1.4'
+    compile 'com.android.tools.build:gradle:2.2.0'
 }
 
 //设置maven deployer
@@ -29,7 +29,7 @@ uploadArchives {
             //设置插件的GAV参数
             pom.groupId = 'com.toutiao.router'
             pom.artifactId = 'ttregister'
-            pom.version = '1.0.0'
+            pom.version = '1.0.1'
             //文件发布到下面目录
             repository(url: uri('../repo'))
         }

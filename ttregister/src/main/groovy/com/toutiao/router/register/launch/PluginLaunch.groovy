@@ -17,6 +17,7 @@ public class PluginLaunch implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         def isApp = project.plugins.hasPlugin(AppPlugin)
+        Logger.i('Project arouter-register apply')
         //only application module needs this plugin to generate register code
         if (isApp) {
             Logger.make(project)
