@@ -1,1 +1,1 @@
-include ':app', ':ttregister'
+include ':app', ':ttregister', ':app_lib_interface'

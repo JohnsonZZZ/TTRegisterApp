@@ -1,12 +1,11 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.toutiao.arouter'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 27
     defaultConfig {
         applicationId "johnson.github.com.ttregisterapp"
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -21,9 +20,28 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0-rc01'
+    implementation 'com.android.support:appcompat-v7:25.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    api project(path: ':app_lib_interface')
+}
+
+apply plugin: 'com.toutiao.router'
+autoregister {
+    registerInfo = [
+            [
+                    'scanInterface'             : 'com.billy.app_lib_interface.ICategory'
+                    // scanSuperClasses 会自动被加入到exclude中，下面的exclude只作为演示，其实可以不用手动添加
+                    , 'scanSuperClasses'        : ['johnson.github.com.ttregisterapp.BaseCategory']
+                    , 'codeInsertToClassName'   : 'com.billy.app_lib_interface.CategoryManager'
+                    //未指定codeInsertToMethodName，默认插入到static块中，故此处register必须为static方法
+                    , 'registerMethodName'      : 'register' //
+                    , 'exclude'                 : [
+                    //排除的类，支持正则表达式（包分隔符需要用/表示，不能用.）
+                    'johnson.github.com.ttregisterapp.BaseCategory'.replaceAll('\\.', '/') //排除这个基类
+            ]
+            ]
+    ]
 }

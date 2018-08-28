@@ -1,7 +1,5 @@
 package com.toutiao.router.register.core
 
-import com.toutiao.router.register.utils.Logger
-import com.toutiao.router.register.utils.ScanSetting
 import org.apache.commons.io.IOUtils
 import org.objectweb.asm.*
 
@@ -9,31 +7,26 @@ import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 import java.util.zip.ZipEntry
-/**
- * generate register code into LogisticsCenter.class
- * @author billy.qi email: qiyilike@163.com
- */
-class RegisterCodeGenerator {
-    ScanSetting extension
 
-    private RegisterCodeGenerator(ScanSetting extension) {
+class CodeInsertProcessor {
+    RegisterInfo extension
+
+    private CodeInsertProcessor(RegisterInfo extension) {
         this.extension = extension
     }
 
-    static void insertInitCodeTo(ScanSetting registerSetting) {
-        if (registerSetting != null && !registerSetting.classList.isEmpty()) {
-            RegisterCodeGenerator processor = new RegisterCodeGenerator(registerSetting)
-            File file = RegisterTransform.fileContainsInitClass
+    static void insertInitCodeTo(RegisterInfo extension) {
+        if (extension != null && !extension.classList.isEmpty()) {
+            CodeInsertProcessor processor = new CodeInsertProcessor(extension)
+            File file = extension.fileContainsInitClass
             if (file.getName().endsWith('.jar'))
                 processor.insertInitCodeIntoJarFile(file)
+            else
+                processor.insertInitCodeIntoClassFile(file)
         }
     }
 
-    /**
-     * generate code into jar file
-     * @param jarFile the jar file which contains LogisticsCenter.class
-     * @return
-     */
+    //处理jar包中的class代码注入
     private File insertInitCodeIntoJarFile(File jarFile) {
         if (jarFile) {
             def optJar = new File(jarFile.getParent(), jarFile.name + ".opt")
@@ -49,10 +42,8 @@ class RegisterCodeGenerator {
                 ZipEntry zipEntry = new ZipEntry(entryName)
                 InputStream inputStream = file.getInputStream(jarEntry)
                 jarOutputStream.putNextEntry(zipEntry)
-                if (ScanSetting.GENERATE_TO_CLASS_FILE_NAME == entryName) {
-
-                    Logger.i('Insert init code to class >> ' + entryName)
-
+                if (isInitClass(entryName)) {
+                    println('codeInsertToClassName:' + entryName)
                     def bytes = referHackWhenInit(inputStream)
                     jarOutputStream.write(bytes)
                 } else {
@@ -71,6 +62,38 @@ class RegisterCodeGenerator {
         }
         return jarFile
     }
+
+    boolean isInitClass(String entryName) {
+        if (entryName == null || !entryName.endsWith(".class"))
+            return false
+        if (extension.initClassName) {
+            entryName = entryName.substring(0, entryName.lastIndexOf('.'))
+            return extension.initClassName == entryName
+        }
+        return false
+    }
+    /**
+     * 处理class的注入
+     * @param file class文件
+     * @return 修改后的字节码文件内容
+     */
+    private byte[] insertInitCodeIntoClassFile(File file) {
+        def optClass = new File(file.getParent(), file.name + ".opt")
+
+        FileInputStream inputStream = new FileInputStream(file)
+        FileOutputStream outputStream = new FileOutputStream(optClass)
+
+        def bytes = referHackWhenInit(inputStream)
+        outputStream.write(bytes)
+        inputStream.close()
+        outputStream.close()
+        if (file.exists()) {
+            file.delete()
+        }
+        optClass.renameTo(file)
+        return bytes
+    }
+
 
     //refer hack class when object init
     private byte[] referHackWhenInit(InputStream inputStream) {
@@ -95,33 +118,48 @@ class RegisterCodeGenerator {
         MethodVisitor visitMethod(int access, String name, String desc,
                                   String signature, String[] exceptions) {
             MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
-            //generate code into this method
-            if (name == ScanSetting.GENERATE_TO_METHOD_NAME) {
-                mv = new RouteMethodVisitor(Opcodes.ASM5, mv)
+            if (name == extension.initMethodName) { //注入代码到指定的方法之中
+                boolean _static = (access & Opcodes.ACC_STATIC) > 0
+                mv = new MyMethodVisitor(Opcodes.ASM5, mv, _static)
             }
             return mv
         }
     }
 
-    class RouteMethodVisitor extends MethodVisitor {
+    class MyMethodVisitor extends MethodVisitor {
+        boolean _static;
 
-        RouteMethodVisitor(int api, MethodVisitor mv) {
+        MyMethodVisitor(int api, MethodVisitor mv, boolean _static) {
             super(api, mv)
+            this._static = _static;
         }
 
         @Override
         void visitInsn(int opcode) {
-            //generate code before return
             if ((opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN)) {
                 extension.classList.each { name ->
-                    name = name.replaceAll("/", ".")
-                    mv.visitLdcInsn(name)//类名
-                    // generate invoke register method into LogisticsCenter.loadRouterMap()
-                    mv.visitMethodInsn(Opcodes.INVOKESTATIC
-                            , ScanSetting.GENERATE_TO_CLASS_NAME
-                            , ScanSetting.REGISTER_METHOD_NAME
-                            , "(Ljava/lang/String;)V"
-                            , false)
+                    if (!_static) {
+                        //加载this
+                        mv.visitVarInsn(Opcodes.ALOAD, 0)
+                    }
+                    //用无参构造方法创建一个组件实例
+                    mv.visitTypeInsn(Opcodes.NEW, name)
+                    mv.visitInsn(Opcodes.DUP)
+                    mv.visitMethodInsn(Opcodes.INVOKESPECIAL, name, "<init>", "()V", false)
+                    //调用注册方法将组件实例注册到组件库中
+                    if (_static) {
+                        mv.visitMethodInsn(Opcodes.INVOKESTATIC
+                                , extension.registerClassName
+                                , extension.registerMethodName
+                                , "(L${extension.interfaceName};)V"
+                                , false)
+                    } else {
+                        mv.visitMethodInsn(Opcodes.INVOKESPECIAL
+                                , extension.registerClassName
+                                , extension.registerMethodName
+                                , "(L${extension.interfaceName};)V"
+                                , false)
+                    }
                 }
             }
             super.visitInsn(opcode)
