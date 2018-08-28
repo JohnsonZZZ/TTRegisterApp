@@ -7,12 +7,12 @@ import java.util.Set;
  * @author billy.qi
  * @since 17/9/20 16:56
  */
-public class CategoryManager {
-    private static HashMap<String, ICategory> CATEGORIES = new HashMap<>();
+public class H5RegisterManager {
+    private static HashMap<String, IH5Delegate> CATEGORIES = new HashMap<>();
 
-    static void register(ICategory category) {
+    static void register(IH5Delegate category) {
         if (category != null) {
-            CATEGORIES.put(category.getName(), category);
+            CATEGORIES.put(category.getFilter(), category);
         }
     }
 

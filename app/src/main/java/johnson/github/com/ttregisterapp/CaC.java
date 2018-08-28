@@ -2,7 +2,7 @@ package johnson.github.com.ttregisterapp;
 
 public class CaC extends BaseCategory {
     @Override
-    public String getName() {
+    public String getFilter() {
         return "CaC";
     }
 }

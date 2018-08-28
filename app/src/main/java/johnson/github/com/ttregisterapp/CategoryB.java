@@ -6,7 +6,7 @@ package johnson.github.com.ttregisterapp;
  */
 public class CategoryB extends BaseCategory {
     @Override
-    public String getName() {
+    public String getFilter() {
         return "CategoryB";
     }
 }

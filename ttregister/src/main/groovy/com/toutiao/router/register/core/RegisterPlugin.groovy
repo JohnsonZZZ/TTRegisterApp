@@ -5,7 +5,7 @@ import com.android.build.gradle.AppPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-public class PluginRegister implements Plugin<Project> {
+public class RegisterPlugin implements Plugin<Project> {
     public static final String EXT_NAME = 'autoregister'
 
     @Override

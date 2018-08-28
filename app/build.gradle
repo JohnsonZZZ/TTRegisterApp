@@ -32,10 +32,10 @@ apply plugin: 'com.toutiao.router'
 autoregister {
     registerInfo = [
             [
-                    'scanInterface'             : 'com.billy.app_lib_interface.ICategory'
+                    'scanInterface'             : 'com.billy.app_lib_interface.IH5Delegate'
                     // scanSuperClasses 会自动被加入到exclude中，下面的exclude只作为演示，其实可以不用手动添加
                     , 'scanSuperClasses'        : ['johnson.github.com.ttregisterapp.BaseCategory']
-                    , 'codeInsertToClassName'   : 'com.billy.app_lib_interface.CategoryManager'
+                    , 'codeInsertToClassName'   : 'com.billy.app_lib_interface.H5RegisterManager'
                     //未指定codeInsertToMethodName，默认插入到static块中，故此处register必须为static方法
                     , 'registerMethodName'      : 'register' //
                     , 'exclude'                 : [
