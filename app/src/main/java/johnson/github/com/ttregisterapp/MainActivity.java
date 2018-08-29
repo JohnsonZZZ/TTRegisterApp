@@ -2,10 +2,9 @@ package johnson.github.com.ttregisterapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
-import johnson.github.com.baseinterface.H5RegisterManager;
+import johnson.github.com.baselib.H5RegisterManager;
 
 
 public class MainActivity extends AppCompatActivity {

@@ -2,7 +2,7 @@ package johnson.github.com.ttregisterapp;
 
 import android.util.Log;
 
-import johnson.github.com.baseinterface.IH5Delegate;
+import johnson.github.com.baselib.IH5Delegate;
 
 public abstract class BasePage implements IH5Delegate {
 
