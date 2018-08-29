@@ -9,10 +9,10 @@ import java.util.jar.JarOutputStream
 import java.util.zip.ZipEntry
 
 class CodeInsertProcessor {
-    RegisterInfo extension
+    RegisterInfo registerInfo
 
-    private CodeInsertProcessor(RegisterInfo extension) {
-        this.extension = extension
+    private CodeInsertProcessor(RegisterInfo registerInfo) {
+        this.registerInfo = registerInfo
     }
 
     static void insertInitCodeTo(RegisterInfo extension) {
@@ -66,9 +66,9 @@ class CodeInsertProcessor {
     boolean isInitClass(String entryName) {
         if (entryName == null || !entryName.endsWith(".class"))
             return false
-        if (extension.initClassName) {
+        if (registerInfo.initClassName) {
             entryName = entryName.substring(0, entryName.lastIndexOf('.'))
-            return extension.initClassName == entryName
+            return registerInfo.initClassName == entryName
         }
         return false
     }
@@ -118,7 +118,7 @@ class CodeInsertProcessor {
         MethodVisitor visitMethod(int access, String name, String desc,
                                   String signature, String[] exceptions) {
             MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
-            if (name == extension.initMethodName) { //注入代码到指定的方法之中
+            if (name == registerInfo.initMethodName) { //注入代码到指定的方法之中
                 boolean _static = (access & Opcodes.ACC_STATIC) > 0
                 mv = new MyMethodVisitor(Opcodes.ASM5, mv, _static)
             }
@@ -137,7 +137,7 @@ class CodeInsertProcessor {
         @Override
         void visitInsn(int opcode) {
             if ((opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN)) {
-                extension.classList.each { name ->
+                registerInfo.classList.each { name ->
                     if (!_static) {
                         //加载this
                         mv.visitVarInsn(Opcodes.ALOAD, 0)
@@ -149,15 +149,15 @@ class CodeInsertProcessor {
                     //调用注册方法将组件实例注册到组件库中
                     if (_static) {
                         mv.visitMethodInsn(Opcodes.INVOKESTATIC
-                                , extension.registerClassName
-                                , extension.registerMethodName
-                                , "(L${extension.interfaceName};)V"
+                                , registerInfo.registerClassName
+                                , registerInfo.registerMethodName
+                                , "(L${registerInfo.interfaceName};)V"
                                 , false)
                     } else {
                         mv.visitMethodInsn(Opcodes.INVOKESPECIAL
-                                , extension.registerClassName
-                                , extension.registerMethodName
-                                , "(L${extension.interfaceName};)V"
+                                , registerInfo.registerClassName
+                                , registerInfo.registerMethodName
+                                , "(L${registerInfo.interfaceName};)V"
                                 , false)
                     }
                 }

@@ -1,4 +1,4 @@
-package johnson.github.com.ttregisterapp.baselib;
+package com.toutiao.router.register.baselib;
 
 /**
  * @author billy.qi

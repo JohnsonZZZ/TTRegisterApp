@@ -11,6 +11,13 @@ public class LogUtil{
             logger = project.getLogger()
         }
     }
+
+    static void q(String quiet) {
+        if (logger) {
+            logger.quiet("TTRouter>>> " + quiet)
+        }
+    }
+
     static void i(String info) {
         if (logger) {
             logger.info("TTRouter>>> " + info)
@@ -22,4 +29,11 @@ public class LogUtil{
             logger.error("TTRouter>>> " + error)
         }
     }
+
+    static void w(String warn) {
+        if (logger) {
+            logger.warn("TTRouter>>> " + warn)
+        }
+    }
+
 }

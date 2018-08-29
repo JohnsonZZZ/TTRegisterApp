@@ -17,7 +17,7 @@ class RegisterTransform extends Transform {
 
     @Override
     String getName() {
-        return "auto-register"
+        return "com.toutiao.router"
     }
 
     @Override
@@ -40,7 +40,7 @@ class RegisterTransform extends Transform {
                    , Collection<TransformInput> referencedInputs
                    , TransformOutputProvider outputProvider
                    , boolean isIncremental) throws IOException, TransformException, InterruptedException {
-        project.logger.warn("start auto-register transform...")
+        project.logger.warn("start toutiao register transform...")
         // clean build cache
         if (!isIncremental) {
             outputProvider.deleteAll()

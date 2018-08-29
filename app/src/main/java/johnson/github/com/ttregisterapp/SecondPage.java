@@ -1,8 +1,8 @@
 package johnson.github.com.ttregisterapp;
 
-public class CaC extends BasePage {
+public class SecondPage extends BasePage {
     @Override
     public String getFilter() {
-        return "CaC";
+        return "SecondPage";
     }
 }

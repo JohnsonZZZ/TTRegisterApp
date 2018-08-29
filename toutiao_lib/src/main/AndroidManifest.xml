@@ -1,2 +1,2 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="johnson.github.com.toutiao_lib" />
+    package="com.toutiao.router.register.baselib" />

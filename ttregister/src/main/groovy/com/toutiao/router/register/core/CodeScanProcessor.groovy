@@ -63,13 +63,13 @@ class CodeScanProcessor {
     }
 
     // file in folder like these
-    //com/billy/testplugin/Aop.class
-    //com/billy/testplugin/BuildConfig.class
-    //com/billy/testplugin/R$attr.class
-    //com/billy/testplugin/R.class
+    //com/johnson/testplugin/Aop.class
+    //com/johnson/testplugin/BuildConfig.class
+    //com/johnson/testplugin/R$attr.class
+    //com/johnson/testplugin/R.class
     // entry in jar like these
     //android/support/v4/BuildConfig.class
-    //com/lib/xiwei/common/util/UiTools.class
+    //com/lib/common/util/UiTools.class
     boolean shouldProcessClass(String entryName) {
 //        println('classes:' + entryName)
         if (entryName == null || !entryName.endsWith(".class"))

@@ -34,7 +34,8 @@ class AutoRegisterConfig {
             if (info.validate())
                 list.add(info)
             else {
-                project.logger.error('auto register config error: scanInterface, codeInsertToClassName and registerMethodName should not be null\n' + info.toString())
+                LogUtil.e('register config error: scanInterface, codeInsertToClassName and ' +
+                        'registerMethodName should not be null\n' + info.toString())
             }
 
         }

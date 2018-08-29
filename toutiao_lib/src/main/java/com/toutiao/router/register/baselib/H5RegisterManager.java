@@ -1,9 +1,7 @@
-package johnson.github.com.ttregisterapp.baselib;
+package com.toutiao.router.register.baselib;
 
 import java.util.HashMap;
 import java.util.Set;
-
-import johnson.github.com.ttregisterapp.baselib.IH5Delegate;
 
 public class H5RegisterManager {
     private static HashMap<String, IH5Delegate> pageMap = new HashMap<>();
