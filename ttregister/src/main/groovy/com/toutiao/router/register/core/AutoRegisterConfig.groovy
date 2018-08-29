@@ -5,7 +5,7 @@ class AutoRegisterConfig {
 
     public ArrayList<Map<String, Object>> registerInfo = []
 
-    ArrayList<RegisterInfo> list = new ArrayList<>()
+    ArrayList<RegisterInfo> infoList = new ArrayList<>()
 
     Project project
 
@@ -32,7 +32,7 @@ class AutoRegisterConfig {
             info.exclude = map.get('exclude')
             info.init()
             if (info.validate())
-                list.add(info)
+                infoList.add(info)
             else {
                 LogUtil.e('register config error: scanInterface, codeInsertToClassName and ' +
                         'registerMethodName should not be null\n' + info.toString())
@@ -42,7 +42,7 @@ class AutoRegisterConfig {
     }
 
     void reset() {
-        list.each { info ->
+        infoList.each { info ->
             info.reset()
         }
     }
@@ -50,9 +50,9 @@ class AutoRegisterConfig {
     @Override
     String toString() {
         StringBuilder sb = new StringBuilder(RegisterPlugin.EXT_NAME).append(' [\n')
-        def size = list.size()
+        def size = infoList.size()
         for (int i = 0; i < size; i++) {
-            sb.append('\t' + list.get(i).toString().replaceAll('\n', '\n\t'))
+            sb.append('\t' + infoList.get(i).toString().replaceAll('\n', '\n\t'))
             if (i < size - 1)
                 sb.append(',\n')
         }

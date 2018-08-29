@@ -17,7 +17,7 @@ class RegisterTransform extends Transform {
 
     @Override
     String getName() {
-        return "com.toutiao.router"
+        return RegisterConfig.PLUGIN_NAME
     }
 
     @Override
@@ -40,14 +40,14 @@ class RegisterTransform extends Transform {
                    , Collection<TransformInput> referencedInputs
                    , TransformOutputProvider outputProvider
                    , boolean isIncremental) throws IOException, TransformException, InterruptedException {
-        project.logger.warn("start toutiao register transform...")
+        LogUtil.w("start toutiao register transform...")
         // clean build cache
         if (!isIncremental) {
             outputProvider.deleteAll()
         }
         config.reset()
-        project.logger.warn(config.toString())
-        CodeScanProcessor scanProcessor = new CodeScanProcessor(config.list)
+        LogUtil.w(config.toString())
+        CodeScanProcessor scanProcessor = new CodeScanProcessor(config.infoList)
         long time = System.currentTimeMillis()
         boolean leftSlash = File.separator == '/'
         // 遍历输入文件
@@ -72,7 +72,7 @@ class RegisterTransform extends Transform {
                 }
                 FileUtils.copyFile(src, dest)
 
-                project.logger.info "Copying\t${src.absolutePath} \nto\t\t${dest.absolutePath}"
+                LogUtil.i("Copying\t${src.absolutePath} \nto\t\t${dest.absolutePath}")
             }
             // 遍历目录
             input.directoryInputs.each { DirectoryInput directoryInput ->
@@ -95,19 +95,19 @@ class RegisterTransform extends Transform {
                         }
                     }
                 }
-                project.logger.info "Copying\t${directoryInput.file.absolutePath} \nto\t\t${dest.absolutePath}"
+                LogUtil.i("Copying\t${directoryInput.file.absolutePath} \nto\t\t${dest.absolutePath}")
                 // 处理完后拷到目标文件
                 FileUtils.copyDirectory(directoryInput.file, dest)
             }
         }
         def scanFinishTime = System.currentTimeMillis()
-        project.logger.error("register scan all class cost time: " + (scanFinishTime - time) + " ms")
+        LogUtil.e("register scan all class cost time: " + (scanFinishTime - time) + " ms")
 
-        config.list.each { ext ->
+        config.infoList.each { ext ->
             if (ext.fileContainsInitClass) {
                 println("insert register code to file:" + ext.fileContainsInitClass.absolutePath)
                 if (ext.classList.isEmpty()) {
-                    project.logger.error("No class implements found for interface:" + ext.interfaceName)
+                    LogUtil.e("No class implements found for interface:" + ext.interfaceName)
                 } else {
                     ext.classList.each {
                         println(it)
@@ -116,12 +116,12 @@ class RegisterTransform extends Transform {
                     CodeInsertProcessor.insertInitCodeTo(ext)
                 }
             } else {
-                project.logger.error("The specified register class not found:" + ext.registerClassName)
+                LogUtil.e("The specified register class not found:" + ext.registerClassName)
             }
         }
         def finishTime = System.currentTimeMillis()
-        project.logger.error("register insert code cost time: " + (finishTime - scanFinishTime) + " ms")
-        project.logger.error("register cost time: " + (finishTime - time) + " ms")
+        LogUtil.e("register insert code cost time: " + (finishTime - scanFinishTime) + " ms")
+        LogUtil.e("register cost time: " + (finishTime - time) + " ms")
     }
 
 }
