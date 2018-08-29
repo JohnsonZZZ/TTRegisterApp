@@ -3,8 +3,9 @@ package johnson.github.com.ttregisterapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
-import com.billy.app_lib_interface.H5RegisterManager;
+import johnson.github.com.baseinterface.H5RegisterManager;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
             sb.append(s);
             sb.append("\n");
         }
-        Log.e("xxx",  sb.toString());
+        TextView textView = findViewById(R.id.tv);
+        textView.setText(sb.toString());
     }
 }

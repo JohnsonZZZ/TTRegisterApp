@@ -1,1 +1,1 @@
-include ':app', ':ttregister', ':app_lib_interface'
+include ':app', ':ttregister', ':toutiao_lib'

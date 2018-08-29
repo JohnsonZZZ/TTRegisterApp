@@ -1,4 +1,4 @@
-package com.billy.app_lib_interface;
+package johnson.github.com.baseinterface;
 
 /**
  * @author billy.qi

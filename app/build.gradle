@@ -19,23 +19,23 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:25.0.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.0.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-//    testImplementation 'junit:junit:4.12'
-//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    api project(path: ':app_lib_interface')
+    //    testImplementation 'junit:junit:4.12'
+    //    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    //    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    api project(':toutiao_lib')
 }
 
 apply plugin: 'com.toutiao.router'
 autoregister {
     registerInfo = [
             [
-                    'scanInterface'             : 'com.billy.app_lib_interface.IH5Delegate'
+                    'scanInterface'             : 'johnson.github.com.baseinterface.IH5Delegate'
                     // scanSuperClasses 会自动被加入到exclude中，下面的exclude只作为演示，其实可以不用手动添加
-                    , 'scanSuperClasses'        : ['johnson.github.com.ttregisterapp.BaseCategory']
-                    , 'codeInsertToClassName'   : 'com.billy.app_lib_interface.H5RegisterManager'
+                    , 'scanSuperClasses'        : ['johnson.github.com.ttregisterapp.BasePage']
+                    , 'codeInsertToClassName'   : 'johnson.github.com.baseinterface.H5RegisterManager'
                     //未指定codeInsertToMethodName，默认插入到static块中，故此处register必须为static方法
                     , 'registerMethodName'      : 'register' //
                     , 'exclude'                 : [
